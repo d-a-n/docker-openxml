@@ -18,7 +18,7 @@ RUN dpkg --add-architecture i386 \
                 xvfb \
                 wget \
                 curl
-ENV DEBIAN_FRONTEND=newt
+ENV DEBIAN_FRONTEND=text
 
 # set wine ENV vars
 ENV WINEPREFIX /root/.wine
