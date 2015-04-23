@@ -1,12 +1,33 @@
 FROM phusion/baseimage:latest
-
-MAINTAINER Daniel Korger version: 0.1
-
-RUN apt-get update
-RUN apt-get -y upgrade
-RUN apt-get -y install wget libx11-6 libglapi-mesa libglu1-mesa libcups2 libfontconfig1
+MAINTAINER Daniel Korger <korger@ironshark.de>
 
 WORKDIR /root
+
+# install requirements
+ENV DEBIAN_FRONTEND=noninteractive
+RUN dpkg --add-architecture i386 \
+        && add-apt-repository -y ppa:ubuntu-wine/ppa \
+        && apt-get update -y \
+        && apt-get install -y --no-install-recommends \
+                libcups2 \
+                unoconv \
+                imagemagick \
+                supervisor \
+                wine1.7 \
+                winetricks \
+                xvfb \
+                wget \
+                curl
+ENV DEBIAN_FRONTEND=newt
+
+# set wine ENV vars
+ENV WINEPREFIX /root/.wine
+ENV WINEARCH win32
+
+# Install .NET Framework 4.0
+RUN wine wineboot && xvfb-run winetricks --unattended dotnet40 corefonts
+
+# LibreOffice
 ADD .config .config
 RUN wget "http://mirror.netcologne.de/tdf/libreoffice/stable/4.4.2/deb/x86_64/LibreOffice_4.4.2_Linux_x86-64_deb.tar.gz"
 RUN tar xvf LibreOffice_4.4.2_Linux_x86-64_deb.tar.gz
@@ -15,9 +36,8 @@ RUN dpkg -i *.deb
 WORKDIR ../..
 RUN rm -Rf LibreOffice_4.4.2.2_Linux_x86-64_deb/ LibreOffice_4.4.2_Linux_x86-64_deb.tar.gz
 
-EXPOSE 2002
-
-CMD /opt/libreoffice4.4/program/soffice.bin --headless --nocrashreport --nodefault --nologo --nofirststartwizard --norestore --accept="socket,host=127.0.0.1,port=2002;urp;StarOffice.ComponentContext"
-
-# Clean up APT when done.
-RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+# clean up
+RUN apt-get clean \
+        && apt-get clean autoclean \
+        && apt-get autoremove -y \
+        && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
