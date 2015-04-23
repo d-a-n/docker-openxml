@@ -1,25 +1,9 @@
-# Docker Libreoffice
-This repo hosts the latest Libreoffice version for easy deployment.
+# OpenXML container
 
-## Requirements
+including:
 
-- Docker
-- git
-- supervisor (optional)
-
-## Setup
-
-### 1. Clone this repo
-### 2. Build container
-
-    docker build -t docker-libreoffice .
-
-### 3. Run container
-
-    docker run -p2002:2002 docker-libreoffice
-
-### 4. Setup supervisor for auto (re)start
-
-    cp supervisor-docker-libreoffice.conf /etc/supervisor/conf.d/docker-libreoffice.conf
-    service supervisor restart
-
+- wine
+- dotnet 4.0
+- unoconv
+- imagemagick
+- libreoffice
