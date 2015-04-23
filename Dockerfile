@@ -4,7 +4,7 @@ MAINTAINER Daniel Korger <korger@ironshark.de>
 WORKDIR /root
 
 # install requirements
-ENV DEBIAN_FRONTEND=noninteractive
+ENV DEBIAN_FRONTEND noninteractive
 RUN dpkg --add-architecture i386 \
         && add-apt-repository -y ppa:ubuntu-wine/ppa \
         && apt-get update -y \
@@ -18,7 +18,7 @@ RUN dpkg --add-architecture i386 \
                 xvfb \
                 wget \
                 curl
-ENV DEBIAN_FRONTEND=text
+ENV DEBIAN_FRONTEND text
 
 # set wine ENV vars
 ENV WINEPREFIX /root/.wine
