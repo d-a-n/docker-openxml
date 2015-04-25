@@ -12,6 +12,7 @@ RUN dpkg --add-architecture i386 \
                 libcups2 \
                 unoconv \
                 imagemagick \
+                ghostscript \
                 supervisor \
                 wine1.7 \
                 winetricks \
@@ -29,12 +30,16 @@ RUN wine wineboot && xvfb-run winetricks --unattended dotnet40 corefonts
 
 # LibreOffice
 ADD .config .config
-RUN wget "http://mirror.netcologne.de/tdf/libreoffice/stable/4.4.2/deb/x86_64/LibreOffice_4.4.2_Linux_x86-64_deb.tar.gz"
-RUN tar xvf LibreOffice_4.4.2_Linux_x86-64_deb.tar.gz
-WORKDIR LibreOffice_4.4.2.2_Linux_x86-64_deb/DEBS
+RUN wget "http://mirror3.layerjet.com/tdf/libreoffice/stable/4.3.7/deb/x86_64/LibreOffice_4.3.7_Linux_x86-64_deb.tar.gz"
+RUN tar xvf LibreOffice_*.tar.gz
+WORKDIR LibreOffice_4.3.7.2_Linux_x86-64_deb/DEBS
 RUN dpkg -i *.deb
 WORKDIR ../..
-RUN rm -Rf LibreOffice_4.4.2.2_Linux_x86-64_deb/ LibreOffice_4.4.2_Linux_x86-64_deb.tar.gz
+RUN rm -Rf LibreOffice*
+
+# update unoconv LibreOffice
+RUN rm -R /usr/lib/libreoffice
+RUN ln -s /opt/libreoffice4.3 /usr/lib/libreoffice
 
 # clean up
 RUN apt-get clean \
